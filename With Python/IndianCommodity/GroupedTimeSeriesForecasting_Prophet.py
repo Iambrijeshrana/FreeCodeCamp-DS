@@ -130,5 +130,6 @@ for row in combineDF.itertuples():
         engine = sqlalchemy.create_engine("mssql+pyodbc:///?odbc_connect=%s" % params) 
         engine.connect() 
         metric_df.to_sql(name='TempSales_Predictive1',con=engine, index=False, if_exists='append')
+        metric_df.re
     else:
         print("for "+row.Centre+" "+row.Region+" "+row.Commodity+" number of records are less than 2")
