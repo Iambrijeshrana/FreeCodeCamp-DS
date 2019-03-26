@@ -96,32 +96,44 @@ metric_df = forecast.set_index('ds')[['yhat']].join(df2.set_index('ds').y).reset
 # to print the data
 metric_df
 # to drop NA values
-metric_df.dropna(inplace=True)
-metric_df
+#metric_df.dropna(inplace=True)
+#metric_df
 # check r2 value
 r2_score(metric_df.y, metric_df.yhat)
-
 # check mse
 mean_squared_error(metric_df.y, metric_df.yhat)
-
 # check MAE
 mean_absolute_error(metric_df.y, metric_df.yhat)
 
-# get ds and yhat from forecast
-insert=pd.DataFrame(forecast[['ds','yhat']])
-
 # To insert data frame into MS SQL database without iterate the dataframe
-params = urllib.parse.quote_plus("DRIVER={SQL Server};SERVER=10.0.0.6;DATABASE=HIRANANDANI_REPORTS;UID=Brijesh;PWD=DlVnf84762@3!qWe3")
-engine = sqlalchemy.create_engine("mssql+pyodbc:///?odbc_connect=%s" % params) 
-engine.connect() 
-insert.to_sql(name='table_name11',con=engine, index=True, if_exists='append')
+#params = urllib.parse.quote_plus("DRIVER={SQL Server};SERVER=10.0.0.6;DATABASE=HIRANANDANI_REPORTS;UID=Brijesh;PWD=DlVnf84762@3!qWe3")
+#engine = sqlalchemy.create_engine("mssql+pyodbc:///?odbc_connect=%s" % params) 
+#engine.connect() 
+#insert.to_sql(name='table_name11',con=engine, index=True, if_exists='append')
 
 # Another method to insert sata frame into ms sql table      
 #engine = sqlalchemy.create_engine('mssql+pyodbc:///?odbc_connect=DRIVER={SQL Server};SERVER=10.0.0.6;DATABASE=HIRANANDANI_REPORTS;UID=Brijesh;PWD=DlVnf84762@3!qWe3')
 # Insert data frame into table
 #insert.to_sql(name="table_name", con=engine, index=False, if_exists='append')
 
+# rename column name asper earlier
 metric_df = metric_df.rename(columns={'ds': 'Date',
                         'y': 'Price per Kg', 'yhat' : 'Pridictedprice'})
 
-metric_df
+# add centre column
+metric_df['Centre']='Lucknow'
+# add region column
+metric_df['Region']='North'
+# add Country column
+metric_df['Country']='India'
+# add Commodity column
+metric_df['Commodity']='Tur/Arhar Dal'
+
+metric_df.columns
+
+
+# To insert data frame into MS SQL database without iterate the dataframe
+params = urllib.parse.quote_plus("DRIVER={SQL Server};SERVER=10.0.0.6;DATABASE=HIRANANDANI_REPORTS;UID=Brijesh;PWD=DlVnf84762@3!qWe3")
+engine = sqlalchemy.create_engine("mssql+pyodbc:///?odbc_connect=%s" % params) 
+engine.connect() 
+metric_df.to_sql(name='TempSales_Predictive',con=engine, index=True, if_exists='append')
