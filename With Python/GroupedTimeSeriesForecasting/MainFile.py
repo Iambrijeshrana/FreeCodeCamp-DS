@@ -11,7 +11,9 @@ Created on Tue Mar 26 16:49:26 2019
 
 @author: Brijesh Rana
 """
-
+import logging
+from datetime import datetime
+import os
 import pymssql
 import pandas as pd
 import sqlalchemy
@@ -24,23 +26,32 @@ from sqlalchemy import create_engine, MetaData, Table, select
 from six.moves import urllib
 
 class MainClass:
-        
+    
+    LOG_FILENAME = datetime.now().strftime('D:/log/mylogfile_%H_%M_%S_%d_%m_%Y.log')
+    for handler in logging.root.handlers[:]:
+                logging.root.removeHandler(handler)
+    logging.basicConfig(filename=LOG_FILENAME,level=logging.DEBUG)    
+    logging.info('Forecastiong Job Started...')
     ## instance a python db connection object- same form as psycopg2/python-mysql drivers also
+    logging.info('calling dbConnection()...')
     conn = DBConnection.dbConnection() 
     country = 'India'
     # creare dataframe with unique Commodity Names, Region Names, and Centre Names
     combineSQL = "select distinct Centre, Region, Commodity from [HIRANANDANI_REPORTS].[dbo].[tempsales1]"
+    logging.info("SQL Statement to get unique Commodity Names, Region Names, and Centre Names : "+combineSQL) 
     # read data from database 
     combineDF = pd.read_sql(combineSQL,con=conn)
     # convert output into dataframe 
     combineDF = pd.DataFrame(combineDF)
     # Iterate the dataframe
     # we choose itertuples insted of iterrows here because itertuples is faster than iterrows
+    logging.info("Iterating the dataframe to get Commodity, Region, Centre name one by one")
     for row in combineDF.itertuples():
         ## get Target variable (Commodity price) and date based on Commodity, Centre and Region names
         stmt = "SELECT Date,[Price per Kg]  FROM [HIRANANDANI_REPORTS].[dbo].[tempsales1] where Centre='"+row.Centre+"' and Region='"+row.Region+"' and Commodity='"+row.Commodity+"'"
+        logging.info("SQL Statement to get Date and Target variable based on parameters : "+stmt)
         # print sql script
-        print(stmt)
+        #print(stmt)
         # Excute Query here
         df = pd.read_sql(stmt,con=conn)
         """
@@ -89,17 +100,20 @@ class MainClass:
             # to combine actual data frame (df) with forecasted dataframe (forecast) to see predicted values and actual values 
             metric_df = forecast.set_index('ds')[['yhat']].join(df.set_index('ds').y).reset_index()
             # to print the data
+            validateDF = pd.DataFrame(metric_df)
             #metric_df
             # to drop NA values
-            #metric_df.dropna(inplace=True)
+            validateDF.dropna(inplace=True)
             #metric_df
             # check r2 value
-            r2_score(metric_df.y, metric_df.yhat, )
+            r2 = r2_score(validateDF.y, validateDF.yhat, )
+            print("R2 value of the model is : "+r2.astype('str'))
             # check mse
-            mean_squared_error(metric_df.y, metric_df.yhat)
+            mse = mean_squared_error(validateDF.y, validateDF.yhat)
+            print("Mean Squared Error of model is : "+mse.astype('str'))
             # check MAE
-            mean_absolute_error(metric_df.y, metric_df.yhat)
-            
+            mae = mean_absolute_error(validateDF.y, validateDF.yhat)
+            print("Mean Absolute Error of model is : "+mae.astype('str'))
             # rename column name as per our database table name
             metric_df = metric_df.rename(columns={'ds': 'Date',
                                     'y': 'Price per Kg', 'yhat' : 'Pridictedprice'})
@@ -115,11 +129,12 @@ class MainClass:
             
             #metric_df.columns
             
-            # To insert data frame into MS SQL database without iterate the dataframe
             params = urllib.parse.quote_plus("DRIVER={SQL Server};SERVER=10.0.0.6;DATABASE=HIRANANDANI_REPORTS;UID=Brijesh;PWD=DlVnf84762@3!qWe3")
             engine = sqlalchemy.create_engine("mssql+pyodbc:///?odbc_connect=%s" % params) 
             engine.connect() 
+            # To insert data frame into MS SQL database without iterate the dataframe
             metric_df.to_sql(name='TempSales_Predictive1',con=engine, index=False, if_exists='append')
-            metric_df.re
         else:
-            print("for "+row.Centre+" "+row.Region+" "+row.Commodity+" number of records are less than 2")
+            print("for "+row.Centre+" "+row.Region+" "+row.Commodity+" number of records are less than 2 so we can't predict")
+            
+    print("Prediction Job has been completed")
