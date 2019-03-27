@@ -26,7 +26,7 @@ from sqlalchemy import create_engine, MetaData, Table, select
 from six.moves import urllib
 
 class MainClass:
-    
+    # Create log file
     LOG_FILENAME = datetime.now().strftime('D:/log/mylogfile_%H_%M_%S_%d_%m_%Y.log')
     for handler in logging.root.handlers[:]:
                 logging.root.removeHandler(handler)
@@ -37,7 +37,7 @@ class MainClass:
     conn = DBConnection.dbConnection() 
     country = 'India'
     # creare dataframe with unique Commodity Names, Region Names, and Centre Names
-    combineSQL = "select distinct Centre, Region, Commodity from [HIRANANDANI_REPORTS].[dbo].[tempsales1]"
+    combineSQL = "select distinct Centre, Region, Commodity from [DATABASENAME].[dbo].[TABLENAME]"
     logging.info("SQL Statement to get unique Commodity Names, Region Names, and Centre Names : "+combineSQL) 
     # read data from database 
     combineDF = pd.read_sql(combineSQL,con=conn)
@@ -48,7 +48,7 @@ class MainClass:
     logging.info("Iterating the dataframe to get Commodity, Region, Centre name one by one")
     for row in combineDF.itertuples():
         ## get Target variable (Commodity price) and date based on Commodity, Centre and Region names
-        stmt = "SELECT Date,[Price per Kg]  FROM [HIRANANDANI_REPORTS].[dbo].[tempsales1] where Centre='"+row.Centre+"' and Region='"+row.Region+"' and Commodity='"+row.Commodity+"'"
+        stmt = "SELECT Date,[Price per Kg]  FROM [DATABASENAME].[dbo].[TABLENAME] where Centre='"+row.Centre+"' and Region='"+row.Region+"' and Commodity='"+row.Commodity+"'"
         logging.info("SQL Statement to get Date and Target variable based on parameters : "+stmt)
         # print sql script
         #print(stmt)
@@ -135,11 +135,11 @@ class MainClass:
             
             #metric_df.columns
             logging.info("Inserting the Prophet result into table...")
-            params = urllib.parse.quote_plus("DRIVER={SQL Server};SERVER=10.0.0.6;DATABASE=HIRANANDANI_REPORTS;UID=Brijesh;PWD=DlVnf84762@3!qWe3")
+            params = urllib.parse.quote_plus("DRIVER={SQL Server};SERVER=SERVERNAME;DATABASE=DATABASENAME;UID=USERNAME;PWD=PASSWORD")
             engine = sqlalchemy.create_engine("mssql+pyodbc:///?odbc_connect=%s" % params) 
             engine.connect() 
             # To insert data frame into MS SQL database without iterate the dataframe
-            metric_df.to_sql(name='TempSales_Predictive1',con=engine, index=False, if_exists='append')
+            metric_df.to_sql(name='PREDICTEDTABLENAME',con=engine, index=False, if_exists='append')
             logging.info("Prophet result inserted into table")
         else:
             logging.info("for "+row.Centre+" "+row.Region+" "+row.Commodity+" number of records are less than 2 so we can't predict")      

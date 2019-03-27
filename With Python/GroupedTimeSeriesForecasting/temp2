@@ -19,7 +19,7 @@ from six.moves import urllib
 
 class test:
     con1 = Employee.dbConnection()
-    sql="select name FROM sys.databases where name like '%Hiranandani%'"
+    sql="select name FROM sys.databases where name like '%DBNAME%'"
     dbnames1 = pd.read_sql(sql,con1)
     dbnames
     

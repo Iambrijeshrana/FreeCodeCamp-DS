@@ -23,7 +23,7 @@ class DBConnection:
        #conn = pymssql.connect(server="10.0.0.6", user="Brijesh",password="DlVnf84762@3!qWe3", port=1433) 
        #return conn
        
-       params = urllib.parse.quote_plus("DRIVER={SQL Server};SERVER=10.0.0.6;DATABASE=HIRANANDANI_REPORTS;UID=Brijesh;PWD=DlVnf84762@3!qWe3")
+       params = urllib.parse.quote_plus("DRIVER={SQL Server};SERVER=SERVERNAME;DATABASE=DATABASENAME;UID=USERNAME;PWD=PASSWORD")
        engine = sqlalchemy.create_engine("mssql+pyodbc:///?odbc_connect=%s" % params) 
        return engine.connect() 
       
