@@ -58,7 +58,7 @@ class MainClass:
         In Facebook Prophet model we can't do prediction if number of observation is less than 2, We need at least 2 data points to do forecasting
         So we have given the conditon here to check whether data points is more than 2 or not
         """
-        
+        logging.info("Checking the size of dataframe...")
         if(len(df) >= 2):
             # change the data type of Date column from Object to Date
             df['Date'] = df['Date'].astype('datetime64[ns]')
@@ -66,12 +66,14 @@ class MainClass:
             #df.dtypes
             # To convert price datatype from object to flaot
             df['Price per Kg'] = df['Price per Kg'].astype(float)
+            #logging.info("Dataframe datatypes after conversion : "+df.dtypes)
             #df.dtypes
             """ rename the actual column name  because in prophet the column name should be DS and Y
                 Target variable  name should be y and data variable name should be ds
             """
             df = df.rename(columns={'Date': 'ds',
                                     'Price per Kg': 'y'})
+            #logging.info("Dataframe columns name rename : "+df.columns)
             #df.columns
             # Plot the data 
             ax = df.set_index('ds').plot(figsize=(12, 8))
@@ -88,17 +90,21 @@ class MainClass:
             future_dates = my_model.make_future_dataframe(periods=36, freq='MS')
             #future_dates.tail()
             # predict future value
+            logging.info("Building the Prophet forecast model...")
             forecast = my_model.predict(future_dates)
             forecast[['ds', 'yhat', 'yhat_lower', 'yhat_upper']].tail()
             #forecast.columns
             my_model.plot(forecast,
                           uncertainty=True)
+            logging.info("Prophet forecasting model has been builded")
             # plot seasionality, trend based on yearly monthly day wise etc.
+            logging.info("Prophet forecasting model doing forecast for future")
             my_model.plot_components(forecast)
             # check columns name in forecast model
             #forecast.coloumns
             # to combine actual data frame (df) with forecasted dataframe (forecast) to see predicted values and actual values 
             metric_df = forecast.set_index('ds')[['yhat']].join(df.set_index('ds').y).reset_index()
+            logging.info("Predicted values and Actual values combined into one dataframe")
             # to print the data
             validateDF = pd.DataFrame(metric_df)
             #metric_df
@@ -107,17 +113,17 @@ class MainClass:
             #metric_df
             # check r2 value
             r2 = r2_score(validateDF.y, validateDF.yhat, )
-            print("R2 value of the model is : "+r2.astype('str'))
+            logging.info("R2 value of the model is : "+r2.astype('str'))
             # check mse
             mse = mean_squared_error(validateDF.y, validateDF.yhat)
-            print("Mean Squared Error of model is : "+mse.astype('str'))
+            logging.info("Mean Squared Error of model is : "+mse.astype('str'))
             # check MAE
             mae = mean_absolute_error(validateDF.y, validateDF.yhat)
-            print("Mean Absolute Error of model is : "+mae.astype('str'))
+            logging.info("Mean Absolute Error of model is : "+mae.astype('str'))
             # rename column name as per our database table name
             metric_df = metric_df.rename(columns={'ds': 'Date',
                                     'y': 'Price per Kg', 'yhat' : 'Pridictedprice'})
-            
+            logging.info("Dataframe column renamed as per SQL table")
             # add centre column
             metric_df['Centre']=row.Centre
             # add region column
@@ -128,13 +134,13 @@ class MainClass:
             metric_df['Commodity']=row.Commodity
             
             #metric_df.columns
-            
+            logging.info("Inserting the Prophet result into table...")
             params = urllib.parse.quote_plus("DRIVER={SQL Server};SERVER=10.0.0.6;DATABASE=HIRANANDANI_REPORTS;UID=Brijesh;PWD=DlVnf84762@3!qWe3")
             engine = sqlalchemy.create_engine("mssql+pyodbc:///?odbc_connect=%s" % params) 
             engine.connect() 
             # To insert data frame into MS SQL database without iterate the dataframe
             metric_df.to_sql(name='TempSales_Predictive1',con=engine, index=False, if_exists='append')
+            logging.info("Prophet result inserted into table")
         else:
-            print("for "+row.Centre+" "+row.Region+" "+row.Commodity+" number of records are less than 2 so we can't predict")
-            
-    print("Prediction Job has been completed")
+            logging.info("for "+row.Centre+" "+row.Region+" "+row.Commodity+" number of records are less than 2 so we can't predict")      
+     #logging.info("Prediction Job completed")
