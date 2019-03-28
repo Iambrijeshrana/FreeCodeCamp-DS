@@ -18,7 +18,7 @@ from sqlalchemy import create_engine, MetaData, Table, select
 from six.moves import urllib
 
 ## instance a python db connection object- same form as psycopg2/python-mysql drivers also
-conn = pymssql.connect(server="10.0.0.6", user="Brijesh",password="DlVnf84762@3!qWe3", port=1433)  # You can lookup the port number inside SQL server. 
+conn = pymssql.connect(server="SERVERNAME", user="Brijesh",password="PASSWORD", port=1433)  # You can lookup the port number inside SQL server. 
 
 #Get all database names from 6 srever
 sql="select name FROM sys.databases where name like '%Hiranandani%'"
@@ -26,7 +26,7 @@ dbnames = pd.read_sql(sql,conn)
 dbnames
 
 ## Hey Look, college data
-stmt = "SELECT *  FROM [HIRANANDANI_REPORTS].[dbo].[tempsales1]"
+stmt = "SELECT *  FROM [DATABASENAME].[dbo].[TABLENAME]"
 
 # Excute Query here
 df = pd.read_sql(stmt,conn)
@@ -106,13 +106,12 @@ mean_squared_error(metric_df.y, metric_df.yhat)
 mean_absolute_error(metric_df.y, metric_df.yhat)
 
 # To insert data frame into MS SQL database without iterate the dataframe
-#params = urllib.parse.quote_plus("DRIVER={SQL Server};SERVER=10.0.0.6;DATABASE=HIRANANDANI_REPORTS;UID=Brijesh;PWD=DlVnf84762@3!qWe3")
+#params = urllib.parse.quote_plus("DRIVER={SQL Server};SERVER=SERVERNAME;DATABASE=DATABASENAME;UID=Brijesh;PWD=PASSWORD")
 #engine = sqlalchemy.create_engine("mssql+pyodbc:///?odbc_connect=%s" % params) 
 #engine.connect() 
 #insert.to_sql(name='table_name11',con=engine, index=True, if_exists='append')
 
 # Another method to insert sata frame into ms sql table      
-#engine = sqlalchemy.create_engine('mssql+pyodbc:///?odbc_connect=DRIVER={SQL Server};SERVER=10.0.0.6;DATABASE=HIRANANDANI_REPORTS;UID=Brijesh;PWD=DlVnf84762@3!qWe3')
 # Insert data frame into table
 #insert.to_sql(name="table_name", con=engine, index=False, if_exists='append')
 
@@ -133,7 +132,7 @@ metric_df.columns
 
 
 # To insert data frame into MS SQL database without iterate the dataframe
-params = urllib.parse.quote_plus("DRIVER={SQL Server};SERVER=10.0.0.6;DATABASE=HIRANANDANI_REPORTS;UID=Brijesh;PWD=DlVnf84762@3!qWe3")
+params = urllib.parse.quote_plus("DRIVER={SQL Server};SERVER=SERVERNAME;DATABASE=DATABASENAME;UID=Brijesh;PWD=PASSWORD")
 engine = sqlalchemy.create_engine("mssql+pyodbc:///?odbc_connect=%s" % params) 
 engine.connect() 
 metric_df.to_sql(name='TempSales_Predictive',con=engine, index=True, if_exists='append')
