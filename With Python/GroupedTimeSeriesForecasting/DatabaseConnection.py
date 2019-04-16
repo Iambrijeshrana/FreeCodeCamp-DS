@@ -20,7 +20,7 @@ class DBConnection:
 
    def dbConnection():
        # You can lookup the port number inside SQL server. 
-       #conn = pymssql.connect(server="10.0.0.6", user="Brijesh",password="DlVnf84762@3!qWe3", port=1433) 
+       #conn = pymssql.connect(server="SERVERNAME", user="Brijesh",password="PASSWORD", port=1433) 
        #return conn
        
        params = urllib.parse.quote_plus("DRIVER={SQL Server};SERVER=SERVERNAME;DATABASE=DATABASENAME;UID=USERNAME;PWD=PASSWORD")
