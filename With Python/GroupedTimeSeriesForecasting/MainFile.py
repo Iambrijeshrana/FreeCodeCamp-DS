@@ -32,7 +32,7 @@ class MainClass:
                 logging.root.removeHandler(handler)
     logging.basicConfig(filename=LOG_FILENAME,level=logging.DEBUG)    
     logging.info('Forecastiong Job Started...')
-    ## instance a python db connection object- same form as psycopg2/python-mysql drivers also
+    ##instance a python db connection object- same form as psycopg2/python-mysql drivers also
     logging.info('calling dbConnection()...')
     conn = DBConnection.dbConnection() 
     country = 'India'
@@ -81,7 +81,7 @@ class MainClass:
             ax.set_xlabel('Date')
             plt.show()
             ## create prophet model
-            my_model = Prophet(interval_width=0.95)
+            my_model = Prophet(interval_width=0.95, seasonality_prior_scale = 10,weekly_seasonality= True)
             # fit the prophet model
             my_model.fit(df)
             """ select futre date for which we want to predict, we want to do prediction for next 3 years 
