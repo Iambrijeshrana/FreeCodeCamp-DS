@@ -22,4 +22,4 @@ link = one_a_tag['href']
 download_url = 'http://web.mta.info/developers/'+ link
 urllib.request.urlretrieve(download_url,'./'+link[link.find('/turnstile_')+1:]) 
 # Put the thread in sleep mode to avoid the traffic on website
-time.sleep(1)
+time.sleep(4)
