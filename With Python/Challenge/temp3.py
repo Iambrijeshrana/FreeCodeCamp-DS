@@ -17,11 +17,11 @@ plt.style.use('fivethirtyeight')
 from sqlalchemy import create_engine, MetaData, Table, select
 from six.moves import urllib
 
-serverName="10.0.0.6"
+serverName="********"
 schemaName="dbo"
-databaseName="commonKDAH"
+databaseName="**********"
 userName="Brijesh"
-password="DlVnf84762@3!qWe3"
+password="***********"
 
 connectionURL = "DRIVER={SQL Server};SERVER="+serverName+";DATABASE="+databaseName+";UID="+userName+";PWD="+password
 
