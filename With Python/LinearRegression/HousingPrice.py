@@ -397,3 +397,45 @@ elif durbinWatson > 2.5:
 else:
     print('Little to no autocorrelation', '\n')
     print('Assumption satisfied')
+    
+#Check auto corelation with ACF plot
+from statsmodels.graphics.tsaplots import plot_acf
+plot_acf(y_test-y_pred)
+
+'''
+Homoscedasticity - The scatter plot is good way to check whether the data are homoscedastic 
+(meaning the residuals are equal across the regression line).  
+The following scatter plots show examples of data that are not homoscedastic (i.e., heteroscedastic):
+    
+How to detect it: Plot the residuals and see if the variance appears to be uniform.
+
+How to fix it: Heteroscedasticity (can you tell I like the scedasticity words?) can be solved either by 
+using weighted least squares regression instead of the standard OLS or transforming either the dependent or 
+highly skewed variables. Performing a log transformation on the dependent variable is not a bad place to 
+start.
+'''    
+
+ # Plotting the residuals
+plt.subplots(figsize=(12, 6))
+ax = plt.subplot(111)  # To remove spines
+plt.scatter(x=df.index, y=y_test-y_pred, alpha=0.5)
+plt.plot(np.repeat(0, df.index.max()), color='darkorange', linestyle='--')
+ax.spines['right'].set_visible(False)  # Removing the right spine
+ax.spines['top'].set_visible(False)  # Removing the top spine
+plt.title('Residuals')
+plt.show()  
+
+
+residulas = y_test-y_pred
+fig, ax = plt.subplots(figsize=(12, 6))
+_ = ax.scatter(residulas, y_pred)
+
+ax.spines['right'].set_visible(False)  # Removing the right spine
+ax.spines['top'].set_visible(False)  # Removing the top spine
+plt.title('Residuals')
+plt.show()  
+
+
+    
+    
+    
