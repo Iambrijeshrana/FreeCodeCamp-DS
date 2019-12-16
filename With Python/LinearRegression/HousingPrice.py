@@ -29,7 +29,7 @@ import numpy as np # Import numpy to perform mathematical funcations on data
 
 import plotly
 %matplotlib inline
-import plotly.plotly as py
+#import plotly.plotly as py
 import matplotlib.pyplot as plt # Import pyplot
 import seaborn as sns
 from matplotlib import style
@@ -133,7 +133,6 @@ housingData.iloc[[55],1]
 X = housingData['RM'].values.reshape(-1,1)
 y = housingData['MEDV'].values.reshape(-1,1)
 
-X.columns
 
 # Devide the data into train and test dataset
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
@@ -149,7 +148,6 @@ plt.show()
 #training the algorithm
 regressor = LinearRegression()  
 regressor.fit(X_train, y_train) 
-
 
 #To retrieve the intercept:
 print(regressor.intercept_)
@@ -244,5 +242,92 @@ res.fit().summary()
 import statsmodels.regression.linear_model as smf
 model = smf.OLS(y_test, X_endog,data= X_test).fit()
 model.summary()
+
+
+" ******************** Linear Regression Assumption *********************** "
+''' 
+Linear Relationship
+Multivariate normality
+No or little multicollinearity
+No auto-correlation
+Homoscedasticity
+'''
+'''
+Liner Relationship - linear regression needs the relationship between the independent and dependent 
+variables to be linear.  It is also important to check for outliers since linear regression is sensitive 
+to outlier effects. The linearity assumption can best be tested with scatter plots, But Scatter plot we 
+can use only for max 3 variable so if number of predictors are more than 3 than we should go for 
+Residual plots only. So, it’s good to check always Residual plots.
+The most useful way to plot the residuals, though, is with your predicted values on the x-axis, and 
+your residuals on the y-axis.
+'''
+
+'''
+To detect nonlinearity one can inspect plots of observed vs. predicted values or 
+residuals vs. predicted values. The desired outcome is that points are symmetrically 
+distributed around a diagonal line in the former plot or around a horizontal line in the 
+latter one. In both cases with a roughly constant variance.
+'''
+from yellowbrick.regressor import ResidualsPlot
+
+# residuals vs. predicted values
+visualizer = ResidualsPlot(regressor)
+#visualizer.fit(X_train, y_train)  # Fit the training data to the visualizer
+visualizer.score(X_test, y_test)  # Evaluate the model on the test data
+visualizer.show()      
+
+visualizer = ResidualsPlot(regressor, hist=False)
+visualizer.fit(X_train, y_train)
+visualizer.score(X_test, y_test)
+visualizer.show()
+
+'''
+A common use of the residuals plot is to analyze the variance of the error of the regressor. If the 
+points are randomly dispersed around the horizontal axis, a linear regression model is usually 
+appropriate for the data; otherwise, a non-linear model is more appropriate. In the case above, we see 
+a fairly random, uniform distribution of the residuals against the target in two dimensions. This seems 
+to indicate that our linear model is performing well. We can also see from the histogram that our error 
+are not normally distributed around zero, which also generally indicates that the model is not fitted well.
+'''
+# Observed vs Predicted
+sns.residplot(y_test, y_pred)
+
+
+'''
+Multivariate normality - This assumption can best be checked with a histogram or a Q-Q-Plot.Normality 
+can be checked with a goodness of fit test, e.g., the Kolmogorov-Smirnov test.  When the data is not 
+normally distributed a non-linear transformation (e.g., log-transformation) might fix this issue.
+Our residuals should be normally distributed.
+Check the mean of the residuals, If it zero (or very close), then this assumption is held true for 
+that model. 
+'''
+np.mean(y_test-y_pred)
+    # Here mean is not zero so residuals are not normally distributed
+    
+# Statistic method to check normality (Using the Anderson-Darling test for normal distribution)
+from statsmodels.stats.diagnostic import normal_ad
+p_value_thresh = .05
+# Performing the test on the residuals
+p_value = normal_ad(y_test-y_pred)[1]
+print('p-value from the test - below 0.05 generally means non-normal:', p_value)
+    
+# Reporting the normality of the residuals
+if p_value < p_value_thresh:
+    print('Residuals are not normally distributed')
+else:
+    print('Residuals are normally distributed')
+    
+# Plotting the residuals distribution
+plt.subplots(figsize=(12, 6))
+plt.title('Distribution of Residuals')
+sns.distplot(y_test-y_pred)
+plt.show()
+ 
+ 
+# Q Q plot to check normality
+stats.probplot(model.resid, plot= plt)
+plt.title("Q-Q Plot")
+plt.show()
+
 
 
