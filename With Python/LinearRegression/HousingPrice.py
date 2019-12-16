@@ -433,9 +433,4 @@ _ = ax.scatter(residulas, y_pred)
 ax.spines['right'].set_visible(False)  # Removing the right spine
 ax.spines['top'].set_visible(False)  # Removing the top spine
 plt.title('Residuals')
-plt.show()  
-
-
-    
-    
-    
+plt.show()  # To plot   
