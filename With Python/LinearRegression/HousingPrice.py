@@ -329,5 +329,71 @@ stats.probplot(model.resid, plot= plt)
 plt.title("Q-Q Plot")
 plt.show()
 
+'''
+No or little multicollinearity -  Multicollinearity occurs when the independent variables are too highly correlated with each other.
+Multicollinearity may be tested with three central criteria:
+1) Correlation matrix
+2) VIF
+3) Tolerance
+VIF is a metric computed for every X variable that goes into a linear model. If the VIF of a variable is 
+high, it means the information in that variable is already explained by other X variables present in the 
+given model, which means, more redundant is that variable. So, lower the VIF (<2) the better. 
+With VIF > 5 there is an indication that multicollinearity may be present; with VIF > 10 
+ there is certainly multicollinearity among the variables.
 
 
+the features should be linearly independent. 
+We can detect multicollinearity using the variance inflation factor (VIF). 
+Without going into too many details, the interpretation of VIF is as follows: the square 
+root of a given variable’s VIF shows how much larger the standard error is, compared with 
+what it would be if that predictor were uncorrelated with the other features in the model. 
+If no features are correlated, then all values for VIF will be 1.
+ 
+With VIF > 5 there is an indication that multicollinearity may be present; with VIF > 10 
+there is certainly multicollinearity among the variables.
+'''
+
+
+
+corr = housingData.corr()
+# IF VALUE is greater than .8 than exisst and those variables are highly dependent
+
+# For each feature, calculate VIF and save in dataframe
+vif = pd.DataFrame()
+vif["VIF Factor"] = [variance_inflation_factor(housingData.values, i) for i in range(housingData.shape[1])]
+vif["features"] = housingData.columns
+vif.round(1)
+
+'''
+No autocorrelation of residuals
+This is applicable especially for time series data. Autocorrelation is the correlation of a time Series with 
+lags of itself. When the residuals are autocorrelated, it means that the current value is dependent of the 
+previous (historic) values and that there is a definite unexplained pattern in the Y variable that shows up 
+in the disturbances.
+
+How to detect it: We will perform a Durbin-Watson test to determine if either positive or negative 
+correlation is present. Alternatively, you could create plots of residual autocorrelations.
+
+How to fix it: A simple fix of adding lag variables can fix this problem. Alternatively, interaction terms, 
+additional variables, or additional transformations may fix this.
+'''
+
+from statsmodels.stats.stattools import durbin_watson
+print('Assumption 4: No Autocorrelation', '\n')
+    
+print('\nPerforming Durbin-Watson Test')
+print('Values of 1.5 < d < 2.5 generally show that there is no autocorrelation in the data')
+print('0 to 2< is positive autocorrelation')
+print('>2 to 4 is negative autocorrelation')
+print('-------------------------------------')
+durbinWatson = durbin_watson(y_test-y_pred)
+print('Durbin-Watson:', durbinWatson)
+if durbinWatson < 1.5:
+    print('Signs of positive autocorrelation', '\n')
+    print('Assumption not satisfied')
+elif durbinWatson > 2.5:
+    print('Signs of negative autocorrelation', '\n')
+    print('Assumption not satisfied')
+else:
+    print('Little to no autocorrelation', '\n')
+    print('Assumption satisfied')
