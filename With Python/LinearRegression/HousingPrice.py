@@ -149,6 +149,7 @@ plt.show()
 regressor = LinearRegression()  
 regressor.fit(X_train, y_train) 
 
+
 #To retrieve the intercept:
 print(regressor.intercept_)
 #For retrieving the slope:
@@ -200,7 +201,8 @@ print('Root Mean Squared Error:', np.sqrt(metrics.mean_squared_error(y_test, y_p
 print('Median absolute error:',metrics.median_absolute_error(y_test, y_pred))
 r2 = r2_score(y_test, y_pred)
 print(r2)
-
+# Another way to check the R2
+print(regressor.score(X_test, y_test)) 
 
 # model evaluation on training set
 y_train_predict = regressor.predict(X_train)
@@ -281,6 +283,7 @@ visualizer.fit(X_train, y_train)
 visualizer.score(X_test, y_test)
 visualizer.show()
 
+# Test R2 is the r2 on test data of model
 '''
 A common use of the residuals plot is to analyze the variance of the error of the regressor. If the 
 points are randomly dispersed around the horizontal axis, a linear regression model is usually 
@@ -317,7 +320,7 @@ if p_value < p_value_thresh:
 else:
     print('Residuals are normally distributed')
     
-# Plotting the residuals distribution
+# Plotting the residuals distribution with Histogram to see the how the residuals are spread
 plt.subplots(figsize=(12, 6))
 plt.title('Distribution of Residuals')
 sns.distplot(y_test-y_pred)
@@ -327,7 +330,8 @@ plt.show()
 # Q Q plot to check normality
 stats.probplot(model.resid, plot= plt)
 plt.title("Q-Q Plot")
-plt.show()
+plt.show() 
+# Since most of the points are not lying on the line so residuals are distrinuted normally.
 
 '''
 No or little multicollinearity -  Multicollinearity occurs when the independent variables are too highly correlated with each other.
