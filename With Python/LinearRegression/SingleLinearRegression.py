@@ -1,3 +1,20 @@
+Linear regression is an analysis that assesses whether one or more predictor variables explain the dependent (criterion) variable.  T
+he regression has five key assumptions:
+
+Linear relationship
+Multivariate normality
+No or little multicollinearity
+No auto-correlation
+Homoscedasticity
+
+Liner Relationship - linear regression needs the relationship between the independent and dependent 
+variables to be linear.  It is also important to check for outliers since linear regression is sensitive 
+to outlier effects.  The linearity assumption can best be tested with scatter plots, the following two 
+examples depict two cases, where no and little linearity is present. But Scatter plot we can use only 
+for max 3 variable so if number of predictors are more than 3 than we should go for Residual plots only.
+So, it’s good to check always Residual plots.
+
+
 # -*- coding: utf-8 -*-
 """
 Created on Sun Dec 15 13:24:19 2019
