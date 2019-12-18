@@ -194,3 +194,108 @@ print(r_squared, adjusted_r_squared)
 
 " ******************** Linear Regression Assumption *********************** "
 
+' LINEAR RELATIONSHIP'
+
+from yellowbrick.regressor import ResidualsPlot
+
+# residuals vs. predicted values
+visualizer = ResidualsPlot(regressor)
+#visualizer.fit(X_train, y_train)  # Fit the training data to the visualizer
+visualizer.score(X_test, y_test)  # Evaluate the model on the test data
+visualizer.show()      
+
+visualizer = ResidualsPlot(regressor, hist=False)
+visualizer.fit(X_train, y_train)
+visualizer.score(X_test, y_test)
+visualizer.show()
+# Test R2 is the r2 on test data of model
+
+# Observed vs Predicted
+sns.residplot(y_test, y_pred)
+
+
+' Multivariate normality '
+np.mean(y_test-y_pred)
+# Here mean is not zero so residuals are not normally distributed
+    
+# Statistic method to check normality (Using the Anderson-Darling test for normal distribution)
+from statsmodels.stats.diagnostic import normal_ad
+p_value_thresh = .05
+# Performing the test on the residuals
+p_value = normal_ad(y_test-y_pred)[1]
+print('p-value from the test - below 0.05 generally means non-normal:', p_value)
+    
+# Reporting the normality of the residuals
+if p_value < p_value_thresh:
+    print('Residuals are not normally distributed')
+else:
+    print('Residuals are normally distributed')
+    
+# Plotting the residuals distribution with Histogram to see the how the residuals are spread
+plt.subplots(figsize=(12, 6))
+plt.title('Distribution of Residuals')
+sns.distplot(y_test-y_pred)
+plt.show()
+ 
+ 
+# Q Q plot to check normality
+stats.probplot(model.resid, plot= plt)
+plt.title("Q-Q Plot")
+plt.show() 
+# Since most of the points are not lying on the line so residuals are distrinuted normally.
+
+' No or little multicollinearity '
+
+corr = housingData.corr()
+print(corr)
+# IF VALUE is greater than .8 than exisst and those variables are highly dependent
+
+# For each feature, calculate VIF and save in dataframe
+vif = pd.DataFrame()
+vif["VIF Factor"] = [variance_inflation_factor(housingData.values, i) for i in range(housingData.shape[1])]
+vif["features"] = housingData.columns
+vif.round(1)
+
+' No autocorrelation of residuals '
+
+from statsmodels.stats.stattools import durbin_watson
+print('Assumption 4: No Autocorrelation', '\n')
+    
+print('\nPerforming Durbin-Watson Test')
+print('Values of 1.5 < d < 2.5 generally show that there is no autocorrelation in the data')
+print('0 to 2< is positive autocorrelation')
+print('>2 to 4 is negative autocorrelation')
+print('-------------------------------------')
+durbinWatson = durbin_watson(y_test-y_pred)
+print('Durbin-Watson:', durbinWatson)
+if durbinWatson < 1.5:
+    print('Signs of positive autocorrelation', '\n')
+    print('Assumption not satisfied')
+elif durbinWatson > 2.5:
+    print('Signs of negative autocorrelation', '\n')
+    print('Assumption not satisfied')
+else:
+    print('Little to no autocorrelation', '\n')
+    print('Assumption satisfied')
+    
+#Check auto corelation with ACF plot
+from statsmodels.graphics.tsaplots import plot_acf
+plot_acf(y_test-y_pred)
+
+' Homoscedasticity '    
+
+ # Plotting the residuals
+plt.subplots(figsize=(12, 6))
+ax = plt.subplot(111)  # To remove spines
+plt.scatter(x=df.index, y=df.Actual-df.Predicted, alpha=0.5)
+plt.plot(np.repeat(0, df.index.max()), color='darkorange', linestyle='--')
+ax.spines['right'].set_visible(False)  # Removing the right spine
+ax.spines['top'].set_visible(False)  # Removing the top spine
+plt.title('Residuals')
+plt.show()  
+
+
+residulas = y_test-y_pred
+fig, ax = plt.subplots(figsize=(12, 6))
+_ = ax.scatter(residulas, y_pred)
+ 
