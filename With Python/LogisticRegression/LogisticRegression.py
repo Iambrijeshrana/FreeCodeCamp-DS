@@ -122,4 +122,106 @@ sns.heatmap(bankData.corr(),square = True,cbar=True,annot=True,annot_kws={'size'
 plt.show()
 
 sns.pairplot(bankData)
-plt.bar(bankData.y, bankData.education)
+plt.bar(bankData.job,bankData.y)
+
+# The best way to visualize the two categorical variables is - 
+# 1st using cross tab get the frequancy count for each category
+# 2nd plot the output with bars 
+pd.crosstab(bankData.job,bankData.y).plot(kind='bar')
+plt.title('Purchase Frequency for Job Title')
+plt.xlabel('Job')
+plt.ylabel('Frequency of Purchase')
+plt.savefig('purchase_fre_job')
+
+# Relationship between education and target variable
+pd.crosstab(bankData.education,bankData.y).plot(kind='bar')
+plt.title('Purchase Frequency for education')
+plt.xlabel('Education')
+plt.ylabel('Frequency of Purchase')
+plt.savefig('purchase_fre_education')
+# So, illetrate people are not doing the subscribe so we can remove the data directly where education category illetrate
+'Education seem a strong predictor for the outcome variable.'
+
+# Relation between Marital status and target variable
+table=pd.crosstab(bankData.marital,bankData.y)
+table.div(table.sum(1).astype(float), axis=0).plot(kind='bar', stacked=True)
+plt.title('Stacked Bar Chart of Marital Status vs Purchase')
+plt.xlabel('Marital Status')
+plt.ylabel('Proportion of Customers')
+plt.savefig('mariral_vs_pur_stack')
+'The marital status does not seem a strong predictor for the outcome variable.'
+
+# Relation between Month and target variable
+pd.crosstab(bankData.month,bankData.y).plot(kind='bar')
+plt.title('Purchase Frequency for Month')
+plt.xlabel('Month')
+plt.ylabel('Frequency of Purchase')
+plt.savefig('pur_fre_month_bar')
+
+# Customers age
+bankData.age.hist()
+plt.title('Histogram of Age')
+plt.xlabel('Age')
+plt.ylabel('Frequency')
+plt.savefig('hist_age')
+'Most of the customers of the bank in this dataset are in the age range of 30–40.'
+
+
+pd.crosstab(bankData.poutcome, bankData.y).plot(kind='bar')
+'Poutcome seems to be a good predictor of the outcome variable.'
+
+
+'''************************* CREATE DUMMY VARIABLES ************************************
+The regression can only use numerical variable as its inputs data. Due to this, the categorical 
+variables need to be encoded as dummy variables.
+Dummy coding encodes the categorical variables as 0 and 1 respectively if the observation does not or 
+does belong to the group.
+Basically, the code below select all the variables that are strings, dummy code them thanks to 
+get_dummies and then join it to the data frame.
+
+The basic strategy is to convert each category value into a new column and assign a 1 or 0 
+(True/False) value to the column. This has the benefit of not weighting a value improperly.
+'''
+# Add dummy variables in dataset and remove categorical variables
+columns=['job','marital','education','default','housing','loan','contact','month','day_of_week','poutcome']
+for column in columns:
+ if bankData[column].dtype==object:
+   dummyCols='column'+'_'+column
+   dummyCols=pd.get_dummies(bankData[column], prefix=column)
+   bankData=bankData.join(dummyCols)
+   del bankData[column]
+
+
+bankData.columns
+
+"************************** Step 4. Train Test (Build the model) *****************************"
+data = bankData
+cat_vars=['job','marital','education','default','housing','loan','contact','month','day_of_week','poutcome']
+for var in cat_vars:
+    cat_list='var'+'_'+var
+    cat_list = pd.get_dummies(data[var], prefix=var)
+    data1=data.join(cat_list)
+    data=data1
+    
+cat_vars=['job','marital','education','default','housing','loan','contact','month','day_of_week','poutcome']
+data_vars=data.columns.values.tolist()
+to_keep=[i for i in data_vars if i not in cat_vars]
+
+data_final=data[to_keep]
+data_final.columns.values
+
+X = data_final.loc[:, data_final.columns != 'y']
+y = data_final.loc[:, data_final.columns == 'y']
+from imblearn.over_sampling import SMOTE
+os = SMOTE(random_state=0)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=0)
+columns = X_train.columns
+os_data_X,os_data_y=os.fit_sample(X_train, y_train)
+os_data_X = pd.DataFrame(data=os_data_X,columns=columns )
+os_data_y= pd.DataFrame(data=os_data_y,columns=['y'])
+# we can Check the numbers of our data
+print("length of oversampled data is ",len(os_data_X))
+print("Number of no subscription in oversampled data",len(os_data_y[os_data_y['y']==0]))
+print("Number of subscription",len(os_data_y[os_data_y['y']==1]))
+print("Proportion of no subscription data in oversampled data is ",len(os_data_y[os_data_y['y']==0])/len(os_data_X))
+print("Proportion of subscription data in oversampled data is ",len(os_data_y[os_data_y['y']==1])/len(os_data_X))

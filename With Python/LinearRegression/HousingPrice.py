@@ -428,7 +428,6 @@ ax.spines['top'].set_visible(False)  # Removing the top spine
 plt.title('Residuals')
 plt.show()  
 
-
 residulas = y_test-y_pred
 fig, ax = plt.subplots(figsize=(12, 6))
 _ = ax.scatter(residulas, y_pred)
