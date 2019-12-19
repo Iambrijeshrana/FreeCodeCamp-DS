@@ -125,7 +125,6 @@ print ("Accuracy : ", accuracy_score(y_test, y_pred))
 # Calssification reprot 
 from sklearn.metrics import classification_report
 print(classification_report(y_test, y_pred))
-
 ''' Classification Report:
 
 The classification report displays the Precision, Recall , F1  and Support scores for the model.
@@ -137,3 +136,21 @@ Recall is the amount up-to which the model can predict the outcome. Recall for a
 F1 and Support scores are the amount of data tested for the predictions. 
 
 '''
+
+
+'''
+ROC Curve
+Receiver Operating Characteristic(ROC) curve is a plot of the true positive rate against the false positive rate.
+It shows the tradeoff between sensitivity and specificity.
+AUC score for the case is 0.86. AUC score 1 represents perfect classifier, and 0.5 represents a worthless 
+classifier.
+'''
+from sklearn import metrics
+y_pred_proba = classifier.predict_proba(X_test)[::,1]
+fpr, tpr, _ = metrics.roc_curve(y_test,  y_pred_proba)
+auc = metrics.roc_auc_score(y_test, y_pred_proba)
+plt.plot(fpr,tpr,label="data 1, auc="+str(auc))
+plt.legend(loc=4)
+plt.show()
+
+
