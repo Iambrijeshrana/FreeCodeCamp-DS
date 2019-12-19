@@ -94,5 +94,32 @@ bankData['y'].value_counts()
 plt.hist(bankData.y)
 plt.title('Count Plot')
 
+bankData.groupby('y').mean()
+
+'''
+The average age of customers who bought the term deposit is higher than that of the customers who didn’t.
+The pdays (days since the customer was last contacted) is understandably lower for the customers who bought it. 
+The lower the pdays, the better the memory of the last call and hence the better chances of a sale.
+Surprisingly,campaigns (number of contacts or calls made during the current campaign) are lower for customers who 
+bought the term deposit.
+We can calculate categorical means for other categorical variables such as education and marital status to get a more 
+detailed sense of our data.
+'''
+
+bankData.groupby('education').mean()
+bankData.groupby('education').mean()
+bankData.groupby('education').mean()
+bankData.groupby('education').mean()
+
+# To check the correlation between variables.
+bankData.corr()
 
 
+# To plot the correlation of features with target variable using heatmap of seaborn
+fig = plt.subplots(figsize = (10,10))
+sns.set(font_scale=1.5)
+sns.heatmap(bankData.corr(),square = True,cbar=True,annot=True,annot_kws={'size': 10})
+plt.show()
+
+sns.pairplot(bankData)
+plt.bar(bankData.y, bankData.education)
