@@ -45,4 +45,26 @@ print("Number transactions y_train dataset: ", y_train.shape)
 print("Number transactions X_test dataset: ", X_test.shape) 
 print("Number transactions y_test dataset: ", y_test.shape) 
 
+'Now train the model without handling the imbalanced class distribution'
+
+# logistic regression object 
+lr = LogisticRegression() 
+# train the model on train set 
+lr.fit(X_train, y_train.ravel()) 
+
+predictions = lr.predict(X_test) 
+# print Accuracy and Classification Report
+from sklearn.metrics import accuracy_score 
+print(accuracy_score(y_test,predictions)) 
+print(classification_report(y_test, predictions)) 
+
+'''
+The accuracy comes out to be 100% but did you notice something strange ?
+The recall of the minority class in very less. It proves that the model is more biased towards majority class. 
+So, it proves that this is not the best model.Now, we will apply different imbalanced data handling techniques 
+and see their accuracy and recall results.
+'''
+
+
+
 
