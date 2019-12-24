@@ -86,7 +86,54 @@ categories have equal amount of records. More specifically, the minority class h
 number of majority class. Now see the accuracy and recall results after applying SMOTE algorithm (Oversampling).
 '''
 
+lr1 = LogisticRegression() 
+lr1.fit(X_train_res, y_train_res.ravel()) 
+predictions = lr1.predict(X_test) 
 
+# print classification report 
+print(classification_report(y_test, predictions)) 
+print(accuracy_score(y_test, predictions))
 
+'''
+Wow, We have reduced the accuracy to 98% as compared to previous model but the recall value of minority class 
+has also improved to 92 %. This is a good model compared to the previous one. Recall is great.Now, we will apply 
+NearMiss technique to Under-sample the majority class and see its accuracy and recall results.
+'''
 
+' *************************** NearMiss Algorithm ********************************** '
 
+print("Before Undersampling, counts of label '1': {}".format(sum(y_train == 1))) 
+print("Before Undersampling, counts of label '0': {} \n".format(sum(y_train == 0))) 
+
+# apply near miss 
+from imblearn.under_sampling import NearMiss 
+nr = NearMiss() 
+
+X_train_miss, y_train_miss = nr.fit_sample(X_train, y_train.ravel()) 
+
+print('After Undersampling, the shape of train_X: {}'.format(X_train_miss.shape)) 
+print('After Undersampling, the shape of train_y: {} \n'.format(y_train_miss.shape)) 
+
+print("After Undersampling, counts of label '1': {}".format(sum(y_train_miss == 1))) 
+print("After Undersampling, counts of label '0': {}".format(sum(y_train_miss == 0))) 
+
+'''
+The NearMiss Algorithm has undersampled the majority instances and made it equal to majority class. Here, the 
+majority class has been reduced to the total number of minority class, so that both classes will have equal 
+number of records.
+'''
+
+# train the model on train set 
+lr2 = LogisticRegression() 
+lr2.fit(X_train_miss, y_train_miss.ravel()) 
+predictions = lr2.predict(X_test) 
+
+# print classification report 
+print(classification_report(y_test, predictions)) 
+print(accuracy_score(y_test, predictions))
+
+'''
+This model is better than the first model because it classifies better and also the recall value of minority 
+class is 95 %. But due to undersampling of majority class, its recall has decreased to 56 %. So in this case, 
+SMOTE is giving me a great accuracy and recall, I’ll go ahead and use that model!
+'''
