@@ -53,12 +53,40 @@ y_pred = classifier.predict(X_test)
 
 ' ************************** Accuracy Check ****************************** '
 
-from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
 print(confusion_matrix(y_test, y_pred))
 print(classification_report(y_test, y_pred))
+print(accuracy_score(y_test, y_pred))
+'''
+The results show that our KNN algorithm was able to classify all the 30 records in the test set with 97% accuracy, 
+which is excellent. Although the algorithm performed very well with this dataset, don't expect the same results 
+with all applications. As noted earlier, KNN doesn't always perform as well with high-dimensionality or 
+categorical features.
+'''
 
+' ******************** Comparing Error Rate with the K Value **************************** '
+''' There is no rule to select K value, One way to help you find the best value of K is to plot the 
+graph of K value and the corresponding error rate for the dataset.
+To do so, let's first calculate the mean of error for all the predicted values where K ranges from 1 and 40. 
+'''
 
+error = []
 
+# Calculating error for K values between 1 and 40
+for i in range(1, 40):
+    knn = KNeighborsClassifier(n_neighbors=i)
+    knn.fit(X_train, y_train)
+    pred_i = knn.predict(X_test)
+    error.append(np.mean(pred_i != y_test))
 
+'The next step is to plot the error values against K values. Execute the following script to create the plot:'
 
+plt.figure(figsize=(12, 6))
+plt.plot(range(1, 40), error, color='red', linestyle='dashed', marker='o',
+         markerfacecolor='blue', markersize=10)
+plt.title('Error Rate K Value')
+plt.xlabel('K Value')
+plt.ylabel('Mean Error')
+
+' From the graph we can see error rate is minimum from 5 to almost 18, so to decide the best valu for K we have to check multiple values and find the minimum error point'
 
