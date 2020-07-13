@@ -159,9 +159,51 @@ plt.show()
 
 gas = pd.read_csv('D:/Personal/Dataset/gas_prices.csv')
 
+plt.figure(figsize=(8,5))
+plt.title('Gas Prices over Time (in USD)', fontdict={'fontweight':'bold', 'fontsize': 18})
 
-plt.plot(gas.Year, gas.USA)
-plt.plot(gas.Year, gas.Canada)
-plt.plot(gas.Year, gas['South Korea'])
-plt.plot(gas.Year, gas.Australia)
+plt.plot(gas.Year, gas.USA, 'b.-', label='United States')
+plt.plot(gas.Year, gas.Canada, 'r.-', label='Canada')
+plt.plot(gas.Year, gas['South Korea'], 'g.-', label='South Korea')
+plt.plot(gas.Year, gas.Australia, 'y.-', label='Australia')
+
+plt.xticks(gas.Year[::3].tolist()+[2011])
+plt.xlabel('Year')
+plt.ylabel('US Dollars')
 plt.legend()
+plt.show()
+
+# Histogram
+fifa = pd.read_csv('D:/Personal/Dataset/fifa_data.csv')
+bins = [40,50,60,70,80,90,100]
+plt.figure(figsize=(8,5))
+plt.hist(fifa.Overall, bins=bins, color='#abcdef')
+plt.xticks(bins)
+plt.ylabel('Number of Players')
+plt.xlabel('Skill Level')
+plt.title('Distribution of Player Skills in FIFA 2018')
+plt.show()
+
+# Boxplot
+
+plt.figure(figsize=(5,8))
+plt.style.use('default')
+barcelona = fifa.loc[fifa.Club == "FC Barcelona"]['Overall']
+madrid = fifa.loc[fifa.Club == "Real Madrid"]['Overall']
+revs = fifa.loc[fifa.Club == "New England Revolution"]['Overall']
+
+#bp = plt.boxplot([barcelona, madrid, revs], labels=['a','b','c'], boxprops=dict(facecolor='red'))
+bp = plt.boxplot([barcelona, madrid, revs], labels=['FC Barcelona','Real Madrid','NE Revolution'], patch_artist=True, medianprops={'linewidth': 2})
+
+plt.title('Professional Soccer Team Comparison')
+plt.ylabel('FIFA Overall Rating')
+
+for box in bp['boxes']:
+    # change outline color
+    box.set(color='#4286f4', linewidth=2)
+    # change fill color
+    box.set(facecolor = '#e0e0e0' )
+    # change hatch
+    #box.set(hatch = '/')
+    
+plt.show()
