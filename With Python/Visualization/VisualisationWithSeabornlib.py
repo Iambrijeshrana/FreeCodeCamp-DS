@@ -122,3 +122,34 @@ sns.relplot(x="timepoint", y="signal", hue="event", style="event",
 '''
 ********** Plotting with categorical data ********** 
 '''
+
+# 1. Categorical scatterplots
+tips.head()
+sns.catplot(x="day", y="total_bill", data=tips);
+
+sns.catplot(y="day", x="total_bill", data=tips);
+
+#The jitter parameter controls the magnitude of jitter or disables it altogether:
+
+sns.catplot(x="day", y="total_bill", jitter=False, data=tips);
+
+'''
+Lets adjusts the points along the categorical axis using an algorithm that prevents 
+them from overlapping. It can give a better representation of the distribution of 
+observations, although it only works well for relatively small datasets. 
+This kind of plot is sometimes called a “beeswarm” and is drawn in seaborn by 
+swarmplot(), which is activated by setting kind="swarm" in catplot():
+'''    
+
+sns.catplot(x="day", y="total_bill", kind="swarm", data=tips);
+
+'''
+Similar to the relational plots, it’s possible to add another dimension to a 
+categorical plot by using a hue semantic. (The categorical plots do not currently 
+                                           support size or style semantics). 
+Each different categorical plotting function handles the hue semantic differently. 
+For the scatter plots, it is only necessary to change the color of the points:
+'''    
+sns.catplot(x="day", y="total_bill", hue="sex", kind="swarm", data=tips);
+
+# categorical plotting functions try to infer the order of categories from the data.
