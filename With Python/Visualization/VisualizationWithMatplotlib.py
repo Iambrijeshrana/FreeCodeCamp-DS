@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 from autoviz.AutoViz_Class import AutoViz_Class
 import numpy as np
 
+
 irisData = pd.read_csv('D:/Personal/Github/UpdatedMain/FreeCodeCamp-DS/With Python/Visualization/Dataset/iris_csv.csv', 
                           names=['sepal_length', 'sepal_width', 'petal_length', 'petal_width', 'class'])
 

@@ -22,12 +22,17 @@ sns.relplot(x="total_bill", y="tip", data=tips);
 
 # lets add one more variable i.e. thired variable using HUE
 sns.relplot(x="total_bill", y="tip", data=tips, hue='smoker');
-# To add stype in soker 
+# To add the style in soker (in case we want want to visualize smokers diffrently)
 sns.relplot(x="total_bill", y="tip", data=tips, hue='smoker', style='smoker');
 
 # we can add 4th variable also using style like - 
 sns.relplot(x="total_bill", y="tip", data=tips, hue='smoker', style='time');
 
+# In the above graph things aee not so clear so lets draw two graph based on time 
+# case if we wanr to see the visualization in two grphs
+
+sns.relplot(x="total_bill", y="tip", hue="smoker",
+            col="time", data=tips);
 '''
 In the examples above, the hue semantic was categorical, so the default qualitative palette was applied. 
 If the hue semantic is numeric (specifically, if it can be cast to float), the default coloring switches 
@@ -81,9 +86,10 @@ sns.relplot(x="timepoint", y="signal", hue="region", style="event",
 df = pd.DataFrame(dict(time=pd.date_range("2017-1-1", periods=500),
                        value=np.random.randn(500).cumsum()))
 g = sns.relplot(x="time", y="value", kind="line", data=df)
+# In the above graph dates are overlapping each other so lets solve this problem
 g.fig.autofmt_xdate()
 
-
+'''
 # See the diffrence
 sns.relplot(x="total_bill", y="tip", hue="smoker",
             style="time", data=tips);
@@ -91,16 +97,28 @@ sns.relplot(x="total_bill", y="tip", hue="smoker",
 sns.relplot(x="total_bill", y="tip", hue="smoker",
             col="time", data=tips);
 '''
-You can also show the influence two variables this way: one by faceting on the columns and one by faceting 
-on the rows. As you start adding more variables to the grid, you may want to decrease the figure size. 
-Remember that the size FacetGrid is parameterized by the height and aspect ratio of each facet:
+
+'''facet mean - a particular aspect or feature of something. or Paksh
+You can also show the influence two variables this way: one by faceting on the columns and one by 
+faceting on the rows. As you start adding more variables to the grid, you may want to decrease the 
+figure size. Remember that the size FacetGrid is parameterized by the height and aspect 
+ratio of each facet:
 '''    
 sns.relplot(x="timepoint", y="signal", hue="subject",
-            col="region", row="event", height=3,
+            col="region", row="event", height=4,
             kind="line", estimator=None, data=fmri);
 
+'''
+When you want to examine effects across many levels of a variable, 
+it can be a good idea to facet that variable on the columns and then 
+“wrap” the facets into the rows:
+'''
 
 sns.relplot(x="timepoint", y="signal", hue="event", style="event",
             col="subject", col_wrap=5,
             height=3, aspect=.75, linewidth=2.5,
-            kind="line", data=fmri.query("region == 'frontal'"));
+            kind="line", data=fmri.query("region == 'frontal'"))
+
+'''
+********** Plotting with categorical data ********** 
+'''
