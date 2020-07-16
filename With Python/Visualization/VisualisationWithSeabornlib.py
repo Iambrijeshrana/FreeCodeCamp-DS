@@ -153,3 +153,95 @@ For the scatter plots, it is only necessary to change the color of the points:
 sns.catplot(x="day", y="total_bill", hue="sex", kind="swarm", data=tips);
 
 # categorical plotting functions try to infer the order of categories from the data.
+
+sns.catplot(x="size", y="total_bill", kind="swarm",
+            data=tips.query("size != 3"));
+
+'''
+The other option for choosing a default ordering is to take the levels of the 
+category as they appear in the dataset. The ordering can also be controlled on a 
+plot-specific basis using the order parameter.
+'''
+sns.catplot(x="smoker", y="tip", order=["No", "Yes"], data=tips);
+
+# 2. Distributions of observations within categories
+'''
+As the size of the dataset grows, categorical scatter plots become limited in the 
+information they can provide about the distribution of values within each category. 
+When this happens, there are several approaches for summarizing the distributional 
+information in ways that facilitate easy comparisons across the category levels.
+'''
+# i. Boxplot
+sns.catplot(x="day", y="total_bill", kind="box", data=tips);
+sns.catplot(x="day", y="total_bill", kind="boxen", data=tips);
+# When adding a hue semantic, the box for each level of the semantic variable is 
+# moved along the categorical axis so they don’t overlap:
+# ii. Boxen
+sns.catplot(x="day", y="total_bill", hue="smoker", kind="box", data=tips);
+sns.catplot(x="day", y="total_bill", hue="smoker", kind="boxen", data=tips);
+
+'''
+A related function, boxenplot(), draws a plot that is similar to a box plot but 
+optimized for showing more information about the shape of the distribution. 
+It is best suited for larger datasets:
+'''
+diamonds = sns.load_dataset("diamonds")
+sns.catplot(x="color", y="price", kind="boxen",
+            data=diamonds.sort_values("color"));    
+
+# Combine boxen plot with swarm
+g = sns.catplot(x="day", y="total_bill", kind="boxen", data=tips)
+sns.swarmplot(x="day", y="total_bill", color="k", size=3, data=tips, ax=g.ax);
+
+# iii. Violinplots
+''' A different approach is a violinplot(), which combines a boxplot with the kernel density 
+estimation procedure described in the distributions tutorial:
+'''
+sns.catplot(x="total_bill", y="day", hue="sex",
+            kind="violin", data=tips);
+
+# Combine Violin plot with swarm
+g = sns.catplot(x="day", y="total_bill", kind="violin", data=tips)
+sns.swarmplot(x="day", y="total_bill", color="k", size=3, data=tips, ax=g.ax);
+
+# 3. Statistical estimation within categories
+'''
+For other applications, rather than showing the distribution within each category, you might 
+want to show an estimate of the central tendency of the values. Seaborn has two main ways to 
+show this information. Importantly, the basic API for these functions is identical to that 
+for the ones discussed above.
+'''
+# i. Barplots
+titanic = sns.load_dataset("titanic")
+sns.catplot(x="sex", y="survived", hue="class", kind="bar", data=titanic);
+
+# A special case for the bar plot is when you want to show the number of observations in 
+# each category rather than computing a statistic for a second variable.
+# it’s easy to do so with the countplot() function:
+
+sns.catplot(x="deck", kind="count", palette="ch:.25", data=titanic);
+
+sns.catplot(x="deck", kind="count", palette="pastel", hue='class', data=titanic);    
+
+# ii. Point plots
+# An alternative style for visualizing the same information is offered by the pointplot() function. 
+sns.catplot(x="sex", y="survived", hue="class", kind="point", data=titanic);
+
+sns.catplot(x="class", y="survived", hue="sex",
+            palette={"male": "g", "female": "m"},
+            markers=["^", "o"], linestyles=["-", "--"],
+            kind="point", data=titanic)
+
+
+''' To control the size and shape of plots made by the functions discussed above, you must set 
+up the figure yourself using matplotlib commands: '''
+
+f, ax = plt.subplots(figsize=(7, 3))
+sns.countplot(y="deck", data=titanic, color="c");
+
+
+'''
+Showing multiple relationships with facets
+Just like relplot(), the fact that catplot() is built on a FacetGrid means that it is easy 
+to add faceting variables to visualize higher-dimensional relationships:
+'''
