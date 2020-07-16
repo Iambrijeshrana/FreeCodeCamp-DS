@@ -271,3 +271,48 @@ kernel density estimate (KDE).
 x = np.random.normal(size=100)
 sns.distplot(x);
 sns.distplot(x, kde=False);
+'''
+Add bin size, also lets add a rug plot, which draws a small vertical tick at each observation. You 
+can make the rug plot itself with the rugplot() function, but it is also available in distplot():
+'''
+sns.distplot(x, bins=20, kde=False, rug=True);
+sns.distplot(x, bins=20, rug=True);
+
+sns.distplot(x, hist=False, rug=True);
+
+# 2. Plotting bivariate distributions
+# let's visualize a bivariate distribution of two variables.
+
+mean, cov = [0, 1], [(1, .5), (.5, 1)]
+data = np.random.multivariate_normal(mean, cov, 200)
+df = pd.DataFrame(data, columns=["x", "y"])
+
+# The most familiar way to visualize a bivariate distribution is a scatterplot
+
+sns.jointplot(x="x", y="y", data=df, kind='scatter');
+
+# Hexbin plots - its good for large dataset
+
+x, y = np.random.multivariate_normal(mean, cov, 1000).T
+with sns.axes_style("white"):
+    sns.jointplot(x=x, y=y, kind="hex", color="blue");
+
+# Visualizing pairwise relationships in a dataset
+
+'''
+To plot multiple pairwise bivariate distributions in a dataset, you can use the 
+pairplot() function. This creates a matrix of axes and shows the relationship 
+for each pair of columns in a DataFrame. By default, it also draws the 
+univariate distribution of each variable on the diagonal Axes:
+'''    
+# It will draw the figure only for numerical values
+iris = sns.load_dataset("iris")
+sns.pairplot(iris);    
+
+sns.pairplot(tips)
+
+'''
+Specifying the hue parameter automatically changes the histograms to KDE plots 
+to facilitate comparisons between multiple distributions.
+'''
+sns.pairplot(iris, hue="species");
