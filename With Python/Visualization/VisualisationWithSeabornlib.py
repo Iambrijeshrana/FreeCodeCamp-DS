@@ -245,3 +245,29 @@ Showing multiple relationships with facets
 Just like relplot(), the fact that catplot() is built on a FacetGrid means that it is easy 
 to add faceting variables to visualize higher-dimensional relationships:
 '''
+
+sns.catplot(x="day", y="total_bill", hue="smoker",
+            col="time", aspect=.6,
+            kind="swarm", data=tips);
+
+g = sns.catplot(x="fare", y="survived", row="class",
+                kind="box", orient="h", height=1.5, aspect=4,
+                data=titanic.query("fare > 0"))
+g.set(xscale="log");
+
+' ************* Visualizing the distribution of a dataset ************* '
+
+# When dealing with a set of data, often the first thing you’ll want to do is get a sense 
+# for how the variables are distributed. 
+
+# 1. Plotting univariate distributions
+
+'''
+The most convenient way to take a quick look at a univariate distribution in seaborn is 
+the distplot() function. By default, this will draw a histogram and fit a 
+kernel density estimate (KDE).
+'''
+
+x = np.random.normal(size=100)
+sns.distplot(x);
+sns.distplot(x, kde=False);
