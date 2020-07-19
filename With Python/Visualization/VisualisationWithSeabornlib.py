@@ -180,6 +180,7 @@ sns.catplot(x="day", y="total_bill", kind="boxen", data=tips);
 sns.catplot(x="day", y="total_bill", hue="smoker", kind="box", data=tips);
 sns.catplot(x="day", y="total_bill", hue="smoker", kind="boxen", data=tips);
 
+
 '''
 A related function, boxenplot(), draws a plot that is similar to a box plot but 
 optimized for showing more information about the shape of the distribution. 
@@ -316,3 +317,20 @@ Specifying the hue parameter automatically changes the histograms to KDE plots
 to facilitate comparisons between multiple distributions.
 '''
 sns.pairplot(iris, hue="species");
+
+
+'  Seaborn figure styles '
+
+'''
+There are five preset seaborn themes: darkgrid, whitegrid, dark, white, and ticks
+*  The default theme is darkgrid.
+ The whitegrid theme is similar, but it is better suited to plots with heavy data 
+ elements. ITS GOOD FOR BOX PLOT
+'''
+
+sns.set_style("whitegrid")
+sns.catplot(x="day", y="total_bill", kind="box", data=tips);
+sns.catplot(x="day", y="total_bill", kind="boxen", data=tips);
+
+# Similarly check all the styles while drawing the fig and choose good one.
+
