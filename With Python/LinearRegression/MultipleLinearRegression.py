@@ -116,6 +116,7 @@ y = housingData['MEDV'].values
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
 
 
+sns.scatterplot()
 # Relationship between dependent and Independent variables
 plt.scatter(X_test['LSTAT'], y_test,  color='gray')
 plt.show()
@@ -147,6 +148,7 @@ plt.grid(which='major', linestyle='-', linewidth='0.5', color='green')
 plt.grid(which='minor', linestyle=':', linewidth='0.5', color='black')
 plt.show()
 
+
 '**************************** Step 4. Accuracy ***************************************'
 
 # Evaluate the model on test data 
@@ -156,6 +158,13 @@ print('Root Mean Squared Error:', np.sqrt(metrics.mean_squared_error(y_test, y_p
 print('Median absolute error:',metrics.median_absolute_error(y_test, y_pred))
 r2 = r2_score(y_test, y_pred)
 print(r2)
+
+def mean_absolute_percentage_error(y_true, y_pred):
+  y_true, y_pred = np.array(y_true), np.array(y_pred)
+  return np.mean(np.abs((y_true - y_pred) / y_true)) * 100
+
+mean_absolute_percentage_error(df['Actual'], df['Predicted'])
+
 # Another way to check the R2
 print(regressor.score(X_test, y_test)) 
 
