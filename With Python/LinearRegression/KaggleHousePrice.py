@@ -10,7 +10,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-
+from scipy import stats
 # Import train and test data set 
 
 trainData = pd.read_csv('D:/Personal/Dataset/House-Price/train.csv')
@@ -98,5 +98,20 @@ numPercent
 
 # First check the outliers 
 
-q1=numericTrainData.quantile(1)
-q3=numericTrainData.quantile(3)
+Q1=numericTrainData.quantile(.25)
+Q3=numericTrainData.quantile(.75)
+
+IQR = numericTrainData.apply(stats.iqr)
+
+numericTrainData[numericTrainData>(q3+1.5*IQR)]
+
+df=numericTrainData[((numericTrainData < (Q1 - 1.5 * IQR)) |
+                     (numericTrainData > (Q3 + 1.5 * IQR))]
+
+data_clean2 = numericTrainData[((numericTrainData < (Q1-1.5*IQR)) | (numericTrainData > (Q3+1.5*IQR))).any(axis=1)]
+                                   
+plt.figure(figsize=(15,10))
+sns.boxplot(numericTrainData.SalePrice, vert=True)                                                          
+plt.show()                     
+                                                          
+                                                          
