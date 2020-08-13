@@ -10,6 +10,9 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+from scipy import stats
+import sweetviz as sv
+from pandas_profiling import ProfileReport
 
 # Import train and test data set 
 
@@ -98,5 +101,60 @@ numPercent
 
 # First check the outliers 
 
-q1=numericTrainData.quantile(1)
-q3=numericTrainData.quantile(3)
+Q1=numericTrainData.quantile(.25)
+Q3=numericTrainData.quantile(.75)
+
+IQR = numericTrainData.apply(stats.iqr)
+
+numericTrainData[numericTrainData>(q3+1.5*IQR)]
+
+df=numericTrainData[((numericTrainData < (Q1 - 1.5 * IQR)) |
+                     (numericTrainData > (Q3 + 1.5 * IQR))]
+numericTrainData.shape
+categoricalTrainData.shape
+# No of outliers for each column
+((numericTrainData < (Q1 - 1.5 * IQR)) | (numericTrainData > (Q3 + 1.5 * IQR))).sum()
+                                   
+plt.figure(figsize=(10,5))
+sns.boxplot(numericTrainData.SalePrice, orient='v')                                                          
+plt.show()                     
+
+plt.figure(figsize=(15,10))
+sns.boxplot(numericTrainData.LotFrontage)                                                          
+plt.show()                     
+                                                          
+plt.figure(figsize=(15,10))
+sns.boxplot(numericTrainData.GarageYrBlt)                                                          
+plt.show()                                                                               
+
+# fill all the missing values by median
+
+sns.distplot(numericTrainData.LotFrontage)
+
+# Now lets fill remainning missing values by Mode
+for column in numericTrainData.columns:
+    numericTrainData[column].fillna(numericTrainData[column].median(), inplace=True)
+
+numericTrainData.isnull().sum().any()
+
+# So now our both the date are clean
+
+# now check the evariance of each column in categorical dataset 
+
+categoricalTrainData.value_counts()
+
+categoricalTrainData.apply(pd.value_counts)
+
+sns.countplot(categoricalTrainData['Utilities'])
+
+categoricalTrainData['Utilities'].apply(pd.value_counts).fillna(0)
+
+cols = categoricalTrainData.columns
+
+count = categoricalTrainData.groupby(['MSZoning', 'Street']).size() 
+print(count) 
+
+count = categoricalTrainData.groupby(categoricalTrainData.columns).size() 
+print(count) 
+
+
