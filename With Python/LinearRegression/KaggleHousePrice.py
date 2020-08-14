@@ -151,10 +151,26 @@ categoricalTrainData['Utilities'].apply(pd.value_counts).fillna(0)
 
 cols = categoricalTrainData.columns
 
-count = categoricalTrainData.groupby(['MSZoning', 'Street']).size() 
-print(count) 
+for col in categoricalTrainData.columns:
+    count = categoricalTrainData.groupby([col]).size() 
+    print("********* Print the frequancy count ***********")
+    print(count) 
 
-count = categoricalTrainData.groupby(categoricalTrainData.columns).size() 
-print(count) 
+# below columns have very  low variance so lets drop them
+# Street, Utilities, Artery, RoofMatl, Heating
+
+sns.countplot(categoricalTrainData.Artery)
+
+categoricalTrainData=categoricalTrainData.drop(['Street', 'Utilities', 'RoofMatl', 'Heating','Condition2'],axis=1)
+
+categoricalTrainData.shape
+
+numericTrainData.columns
+
+numericTrainData.set_option("display.max_rows", None, "display.max_columns", None)
+
+pd.set_option('display.max_rows', 50)
+pd.set_option('display.max_columns', 50)
+pd.set_option('display.width', 2000)
 
 
