@@ -106,10 +106,8 @@ Q3=numericTrainData.quantile(.75)
 
 IQR = numericTrainData.apply(stats.iqr)
 
-numericTrainData[numericTrainData>(q3+1.5*IQR)]
+numericTrainData[numericTrainData>(Q3+1.5*IQR)]
 
-df=numericTrainData[((numericTrainData < (Q1 - 1.5 * IQR)) |
-                     (numericTrainData > (Q3 + 1.5 * IQR))]
 numericTrainData.shape
 categoricalTrainData.shape
 # No of outliers for each column
@@ -141,20 +139,34 @@ numericTrainData.isnull().sum().any()
 
 # now check the evariance of each column in categorical dataset 
 
-categoricalTrainData.value_counts()
-
-categoricalTrainData.apply(pd.value_counts)
-
 sns.countplot(categoricalTrainData['Utilities'])
 
 categoricalTrainData['Utilities'].apply(pd.value_counts).fillna(0)
 
 cols = categoricalTrainData.columns
 
-count = categoricalTrainData.groupby(['MSZoning', 'Street']).size() 
-print(count) 
+for col in categoricalTrainData.columns:
+    count = categoricalTrainData.groupby([col]).size() 
+    print("********* Print the frequancy count ***********")
+    print(count) 
 
-count = categoricalTrainData.groupby(categoricalTrainData.columns).size() 
-print(count) 
+# below columns have very  low variance so lets drop them
+# Street, Utilities, Artery, RoofMatl, Heating
 
+categoricalTrainData=categoricalTrainData.drop(['Street', 'Utilities', 'RoofMatl', 'Heating','Condition2'],axis=1)
 
+categoricalTrainData.shape
+
+numericTrainData.columns
+
+pd.set_option('display.max_rows', 50)
+pd.set_option('display.max_columns', 50)
+pd.set_option('display.width', 2000)
+
+numericTrainData['Age_House']= (numericTrainData['YrSold']-numericTrainData['YearBuilt'])
+
+numericTrainData[numericTrainData.Age_House <0]
+
+numericTrainData['Age_House'].describe()
+
+categoricalTrainData.summ
