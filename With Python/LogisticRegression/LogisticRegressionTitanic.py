@@ -64,7 +64,7 @@ train['Age'].fillna(avgAge, inplace = True)
 
 
 'To replace the null values with mean/median/mode, type the following code:'
-# train.fillna(train.mean())
+# train= train.fillna(train.mean())
 'To drop all the missing values from data set'
 # modifiedDataset = train.dropna()
 
@@ -82,6 +82,7 @@ embark = pd.get_dummies(train['Embarked'],drop_first=True)
 train.drop(['Sex','Embarked','Name','Ticket'],axis=1,inplace=True)
 
 train = pd.concat([train,sex,embark],axis=1)
+
 train.columns
 
 ' ********************* Split the data **************************** '
@@ -100,6 +101,7 @@ predictions = logmodel.predict(X_test)
 
 from sklearn.metrics import classification_report
 print(classification_report(y_test,predictions))
+
 
 # draw confusison matrix to see the accuracy of model
 from sklearn.metrics import confusion_matrix 

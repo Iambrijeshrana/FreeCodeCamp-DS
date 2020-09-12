@@ -49,6 +49,7 @@ inputVariables=list(data)
 del inputVariables[1]
 outputVariables=list(data)[1]
 inputData=data[inputVariables]
+outputVariables=data['price']
 
 inputData.columns
 outputVariables.columns
@@ -105,6 +106,8 @@ df = pd.DataFrame(sample_data, columns=['numeric1','numeric2','categorical'])
 dummies = pd.get_dummies(df.categorical)
 newdata = df.join(dummies)
 newdata
+
+df.dtypes
 
 
 
