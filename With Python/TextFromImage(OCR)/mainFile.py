@@ -26,10 +26,12 @@ for i in all_files:
  outfile="D:/PDFTOTEXT/"+i.replace('.pdf','')+'.txt'
  # call method to extract the text from image and store the text in content variable
  content = readAndInsert(inputfile)
- content = os.linesep.join([s for s in content.splitlines() if s])
+ # content = os.linesep.join([s for s in content.splitlines() if s])
  # Create txt file to insert the text (extracted from image)
  f2 = open(outfile, "a") 
  # insert the image extracted text
+ #f2.writelines(content.strip().replace('\n\n', '\n'))
  f2.writelines(content)
  # close the txt file after inserting all the extracted text from image
  f2.close()
+

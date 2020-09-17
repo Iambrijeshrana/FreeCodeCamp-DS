@@ -57,7 +57,7 @@ def readAndInsert(PDF_file):
   filename = "page_"+str(i)+".jpg" 
   # Recognize the text as string in image using pytesserct 
   # I use psm (Page segmentation modes) 4 to extract the table data
-  text = str(pytesseract.image_to_string(Image.open(filename), lang='eng', config='--psm 4')) 
+  text = str(pytesseract.image_to_string(Image.open(filename), lang='eng', config='--oem 3 --psm 4')) 
   
   '''
   Store recognized text in variable text, replace every '-\n' to with '', 
