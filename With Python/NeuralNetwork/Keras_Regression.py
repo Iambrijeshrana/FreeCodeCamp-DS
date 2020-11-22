@@ -110,4 +110,9 @@ df=df.drop('zipcode', axis=1)
 
 df['yr_renovated'].value_counts()
 
-df=df.drop('yr_renovated', axis=1)
+df['sqft_basement'].value_counts()
+
+
+X=df.drop('price', axis=1)
+y=df['price']
+
