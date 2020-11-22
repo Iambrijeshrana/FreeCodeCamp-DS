@@ -156,4 +156,32 @@ model.history.history
 # convert into dataframe
 # loss - loss on test data
 # val_loss - loss on test
-pd.DataFrame(model.history.history)
+losses=pd.DataFrame(model.history.history)
+
+losses
+# plot the loss funcation of test and train 
+losses.plot()
+# to see the loss funcation values
+from sklearn.metrics import mean_squared_error, mean_absolute_error, explained_variance_score
+# predict price based on x test 
+prediction = model.predict(X_test)
+mean_absolute_error(y_test, prediction)
+mean_squared_error(y_test, prediction)
+rmse=np.sqrt(mean_squared_error(y_test, prediction))
+df['price'].describe()
+# to see how much variance is explained 
+explained_variance_score(y_test, prediction)
+
+plt.figure(figsize=(12,8))
+plt.scatter(y_test, prediction)
+plt.show()
+
+plt.figure(figsize=(12,8))
+plt.scatter(y_test, prediction)
+plt.plot(y_test,y_test,'r')
+plt.show()
+# predict price for new house
+singlehouse=df.drop('price', axis=1).iloc[0]
+singlehouse=scaler.transform(singlehouse.values.reshape(-1,19))
+model.predict(singlehouse)
+df.head()
