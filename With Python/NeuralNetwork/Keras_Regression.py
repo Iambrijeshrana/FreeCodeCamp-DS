@@ -115,6 +115,45 @@ df['yr_renovated'].value_counts()
 df['sqft_basement'].value_counts()
 
 # store predictors into X and target variable into y
-X=df.drop('price', axis=1)
-y=df['price']
+X=df.drop('price', axis=1).values
+y=df['price'].values
 
+from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test=train_test_split(X,y, test_size=.3, random_state=101)
+
+from sklearn.preprocessing import MinMaxScaler
+scaler=MinMaxScaler()
+X_train=scaler.fit_transform(X_train)
+X_test=scaler.fit_transform(X_test)
+
+from tensorflow.keras import Sequential
+from tensorflow.keras.layers import Dense
+
+model=Sequential()
+
+X_train.shape
+
+model.add(Dense(19,activation='relu'))
+model.add(Dense(19,activation='relu'))
+model.add(Dense(19,activation='relu'))
+model.add(Dense(19,activation='relu'))
+
+model.add(Dense(1))
+
+model.compile(optimizer='adam', loss='mse')
+'''
+ validation data parameter added to check the loss funcation on test data (how model is performing)
+ Its helpful to avoid the overfiting
+ validation dataset will not impact weight and biases of train data
+ Since dataset is quite large so batch sixe parameter added to pass the data in batches
+ small batch size gonna take long time to train the model but it avoid overfitting
+'''
+model.fit(x=X_train, y=y_train, 
+          validation_data=(X_test, y_test), batch_size=128, epochs=400)
+# model history (history of loss)
+model.history.history
+# convert into dataframe
+# loss - loss on test data
+# val_loss - loss on test
+pd.DataFrame(model.history.history)
