@@ -118,7 +118,7 @@ mean_squared_error(pred_df['Test True Y'],pred_df['Model Predictions'])
 # Essentially the same thing, difference just due to precision
 test_score
 
-#RMSE
+#RMSE (Root mean square error)
 test_score**0.5
 
 
