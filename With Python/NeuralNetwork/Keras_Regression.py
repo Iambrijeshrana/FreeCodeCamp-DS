@@ -53,3 +53,61 @@ plt.figure(figsize=(12,8))
 sns.scatterplot(x='price', y='lat', data =df)
 
 #
+plt.figure(figsize=(12,8))
+sns.scatterplot(x='long', y='lat',data =df, hue='price')
+
+df.price 
+
+df.sort_values('price',ascending=False)
+# To remove outliers we are dropping 1 % of data, 1%=215 house
+non_top_1_perc = df.sort_values('price',ascending=False).iloc[216:]
+
+plt.figure(figsize=(12,8))
+sns.scatterplot(x='long', y='lat',data =non_top_1_perc,
+                edgecolor=None,alpha=.2,palette='RdYlGn',hue='price')
+
+
+plt.figure(figsize=(12,8))
+sns.scatterplot(x='long', y='lat',data =non_top_1_perc,hue='price')
+
+
+sns.boxplot(x='waterfront', y='price', data=df)
+
+# drop id column
+df=df.drop('id',axis=1)
+
+df['date']=pd.to_datetime(df['date'])
+
+df['date']
+
+df['year']=df['date'].apply(lambda date: date.year)
+
+df['month']=df['date'].apply(lambda date: date.month)
+
+df.head()
+
+plt.figure(figsize=(12,8))
+sns.boxplot(x='month', y='price', data=df)
+
+
+df.groupby('month').mean()['price']
+
+df.groupby('month').mean()['price'].plot()
+
+df.groupby('year').mean()['price'].plot()
+# drop date column its not required 
+df=df.drop('date', axis=1)
+
+df.columns
+
+df.head()
+
+df['zipcode'].value_counts()
+
+# zip code we can drop here rite now, but this approach is not usefel in every case (here domain knowledge require)
+# based on zip code we can identify the expensive areas
+df=df.drop('zipcode', axis=1)
+
+df['yr_renovated'].value_counts()
+
+df=df.drop('yr_renovated', axis=1)
