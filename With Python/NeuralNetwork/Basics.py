@@ -18,7 +18,7 @@ from tensorflow.keras.layers import Dense, Activation
 from sklearn.model_selection import train_test_split
 
 
-df = pd.read_csv('D:/Personal/TensorFlow_FILES/Data/fake_reg.csv')
+df = pd.read_csv('D:/TensorFlow_FILES/Data/fake_reg.csv')
 
 df
 
@@ -49,7 +49,8 @@ scaler.fit(X_train)
 X_train = scaler.transform(X_train)
 X_test = scaler.transform(X_test)
 
-import tensorflow as tf
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense
 
 help(Sequential)
 
@@ -68,6 +69,11 @@ model.compile(optimizer='rmsprop',loss='mse')
 model.fit(X_train,y_train,epochs=250)
 
 model.history.history
+
+df=pd.DataFrame(model.history.history)
+df
+
+df.plot()
 
 loss = model.history.history['loss']
 
@@ -94,25 +100,25 @@ test_predictions = pd.Series(test_predictions.reshape(300,))
 pred_df = pd.concat([pred_df,test_predictions],axis=1)
 
 
-pred_df.columns = ['Test Y','Model Predictions']
+pred_df.columns = ['Test True Y','Model Predictions']
 
-sns.scatterplot(x='Test Y',y='Model Predictions',data=pred_df)
+sns.scatterplot(x='Test True Y',y='Model Predictions',data=pred_df)
 
-pred_df['Error'] = pred_df['Test Y'] - pred_df['Model Predictions']
+pred_df['Error'] = pred_df['Test True Y'] - pred_df['Model Predictions']
 
 
 sns.distplot(pred_df['Error'],bins=50)
 
 from sklearn.metrics import mean_absolute_error,mean_squared_error
 
-mean_absolute_error(pred_df['Test Y'],pred_df['Model Predictions'])
+mean_absolute_error(pred_df['Test True Y'],pred_df['Model Predictions'])
 
-mean_squared_error(pred_df['Test Y'],pred_df['Model Predictions'])
+mean_squared_error(pred_df['Test True Y'],pred_df['Model Predictions'])
 
 # Essentially the same thing, difference just due to precision
 test_score
 
-#RMSE
+#RMSE (Root mean square error)
 test_score**0.5
 
 
@@ -131,8 +137,8 @@ model.predict(new_gem)
 # Saving and Loading a Model
 from tensorflow.keras.models import load_model
 
-model.save('D:/Personal/my_model.h5')  # creates a HDF5 file 'my_model.h5'
+model.save('D:/TensorFlow/my_model.h5')  # creates a HDF5 file 'my_model.h5'
 
-later_model = load_model('D:/Personal/my_model.h5')
+later_model = load_model('D:/TensorFlow/my_model.h5')
 
 later_model.predict(new_gem)
