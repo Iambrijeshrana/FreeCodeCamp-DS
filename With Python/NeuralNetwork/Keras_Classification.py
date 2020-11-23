@@ -38,7 +38,7 @@ from sklearn.model_selection import train_test_split
 X=df.drop('benign_0__mal_1', axis=1).values
 y=df['benign_0__mal_1'].values
 
-X_train, X_test, y_train, y_test=train_test_split(X,y, test_size=.42, random_state=101)
+X_train, X_test, y_train, y_test=train_test_split(X,y, test_size=.25, random_state=101)
 
 
 
@@ -49,3 +49,86 @@ X_test=scaler.fit_transform(X_test)
 
 from tensorflow.keras import Sequential
 from tensorflow.keras.layers import Dense, Dropout
+model=Sequential()
+
+X_train.shape
+
+model.add(Dense(30,activation='relu'))
+model.add(Dense(15,activation='relu'))
+# Binary classification
+model.add(Dense(1,activation='sigmoid'))
+
+model.compile(optimizer='adam', loss='binary_crossentropy')
+
+'''
+ validation data parameter added to check the loss funcation on test data (how model is performing)
+ Its helpful to avoid the overfiting
+ validation dataset will not impact weight and biases of train data
+ Since dataset is quite large so batch sixe parameter added to pass the data in batches
+ small batch size gonna take long time to train the model but it avoid overfitting
+'''
+model.fit(x=X_train, y=y_train, 
+          validation_data=(X_test, y_test), batch_size=128, epochs=600)
+
+# model history (history of loss)
+model.history.history
+# convert into dataframe
+# loss - loss on test data
+# val_loss - loss on test
+losses=pd.DataFrame(model.history.history)
+
+losses
+# plot the loss funcation of test and train 
+losses.plot()
+
+'''By ploting the loss funcation we understood that its overfiting
+  Now let see how we can control the overfiting'''
+  
+model=Sequential()
+
+X_train.shape
+
+model.add(Dense(30,activation='relu'))
+model.add(Dense(15,activation='relu'))
+# Binary classification
+model.add(Dense(1,activation='sigmoid'))
+
+model.compile(optimizer='adam', loss='binary_crossentropy')
+  
+from tensorflow.keras.callbacks import EarlyStopping
+help(EarlyStopping)
+
+early_stop = EarlyStopping(monitor='val_loss', mode='min', verbose=1,patience=25)
+model.fit(x=X_train, y=y_train, 
+          validation_data=(X_test, y_test), batch_size=128, epochs=600,
+          callbacks=[early_stop])
+       
+model_losses=pd.DataFrame(model.history.history)
+model_losses.plot()
+
+# Another way to prevent overfiting is dropout layers
+
+model=Sequential()
+
+model.add(Dense(30,activation='relu'))
+model.add(Dropout(.5))
+model.add(Dense(15,activation='relu'))
+model.add(Dropout(.5))
+# Binary classification
+model.add(Dense(1,activation='sigmoid'))
+
+model.compile(optimizer='adam', loss='binary_crossentropy')
+
+model.fit(x=X_train, y=y_train, 
+          validation_data=(X_test, y_test), batch_size=128, epochs=600,
+          callbacks=[early_stop])
+
+model_losses=pd.DataFrame(model.history.history)
+model_losses.plot()
+predictions = model.predict_classes(X_test)
+
+from sklearn.metrics import classification_report, confusion_matrix
+
+print(classification_report(y_test, predictions))
+
+print(confusion_matrix(y_test, predictions))
