@@ -15,7 +15,7 @@ df = pd.read_csv('D:/TensorFlow_FILES/Data/cancer_classification.csv')
 
 # Set it to None to display all columns in the dataframe
 pd.set_option('display.max_columns', None)
-df.shape()
+df.shape
 
 df.info()
 

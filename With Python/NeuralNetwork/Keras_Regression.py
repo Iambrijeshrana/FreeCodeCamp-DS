@@ -20,7 +20,7 @@ df.isnull().sum().sum()
 
 # To see basic stats of dataset
 df.describe()
-# To transpose the matrix
+# To transpose the matrix 
 df.describe().transpose()
 
 # ********** EDA ***********
